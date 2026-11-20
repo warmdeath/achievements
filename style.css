@@ -10,7 +10,7 @@
   --panel-solid: #120b2e;
   --line: rgba(120, 240, 255, 0.22);
   --line-strong: rgba(120, 240, 255, 0.5);
-  --space: #07031a;
+  --space: #010103;
   --cut: 14px;
   --font-ui: "Chakra Petch", "Rajdhani", "Segoe UI", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
@@ -409,3 +409,7 @@ svg.glyph { fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: 
 @media (prefers-reduced-motion: reduce) {
   .pip, .toast { animation: none; }
 }
+
+/* Opening flight: interface waits until we reach Earth */
+.topbar, .location, .log, .motto { transition: opacity 1.2s ease; }
+body.intro .topbar, body.intro .location, body.intro .log, body.intro .motto { opacity: 0; pointer-events: none; }
