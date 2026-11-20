@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Atlas of the Real</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="sky" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2 L20.7 7 V17 L12 22 L3.3 17 V7 Z" />
+        <path d="M4 12 A8 8 0 0 0 20 12" />
+        <circle cx="12" cy="12" r="2.2" />
+      </svg>
+      <div>
+        <div class="brand-title">ATLAS OF THE REAL</div>
+        <div class="brand-sub">PLANET EARTH · SOL III · DREAM FILTER <span class="ok">ACTIVE</span></div>
+      </div>
+    </div>
+
+    <form class="scan" action="https://www.google.com/search" method="get" role="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 L21 21" /><path d="M10.5 6.5 V8 M10.5 13 V14.5 M6.5 10.5 H8 M13 10.5 H14.5" /></svg>
+      <input name="q" type="search" placeholder="Scan the web…" autocomplete="off" aria-label="Search the web">
+      <kbd>↵</kbd>
+    </form>
+
+    <div class="clock" aria-live="off">
+      <div class="clock-time"><span id="clockHM">--:--</span><span id="clockS" class="clock-s">:--</span></div>
+      <div id="clockDate" class="clock-date">—</div>
+    </div>
+  </header>
+
+  <section class="location" aria-label="Current location">
+    <div class="label"><span class="pip"></span>CURRENT LOCATION</div>
+    <div class="loc-name">MILANO</div>
+    <div class="loc-sub">Lombardia · Italia · Europa</div>
+    <dl class="loc-data">
+      <div><dt>COORD</dt><dd>45.4642° N · 9.1900° E</dd></div>
+      <div><dt>LOCAL</dt><dd id="locTime">—</dd></div>
+      <div><dt>SUN</dt><dd id="locSun">—</dd></div>
+    </dl>
+  </section>
+
+  <div class="planet-space" aria-hidden="true"></div>
+
+  <aside class="log" aria-label="Achieved goals">
+    <div class="log-head">
+      <div>
+        <div class="label">DISCOVERY LOG</div>
+        <h1>Achieved goals</h1>
+      </div>
+      <div class="count"><span id="count">0</span><small>VERIFIED</small></div>
+    </div>
+    <div class="log-meta" id="logMeta"></div>
+    <div class="chips" id="chips" role="toolbar" aria-label="Filter by category"></div>
+    <button class="btn primary" id="addBtn" type="button">
+      <span>+ LOG A DISCOVERY</span><kbd>N</kbd>
+    </button>
+    <ol class="entries" id="entries"></ol>
+    <div class="empty" id="empty" hidden>
+      <div class="empty-glyph">◇</div>
+      <p>No discoveries in orbit yet.</p>
+      <p class="muted">Only what you have already achieved may be logged here. Each one becomes a beacon circling your world.</p>
+    </div>
+    <div class="log-foot">
+      <span class="muted small" id="storeNote">Saved in this browser</span>
+      <div class="foot-actions">
+        <button id="exportBtn" class="btn ghost" type="button">EXPORT</button>
+        <label class="btn ghost" for="importInput">IMPORT</label>
+        <input type="file" id="importInput" accept="application/json,.json" hidden>
+      </div>
+    </div>
+  </aside>
+
+  <div class="motto">ONLY WHAT IS REAL MAY ORBIT HERE · DREAMS DETECTED: <b>0</b></div>
+
+  <div id="tooltip" class="tooltip" hidden></div>
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <dialog id="logDialog" aria-labelledby="dlgTitle">
+    <form id="logForm" method="dialog" novalidate>
+      <div class="label" id="dlgKicker">NEW DISCOVERY</div>
+      <h2 id="dlgTitle">Log an achieved goal</h2>
+
+      <label class="field">
+        <span>WHAT DID YOU ACHIEVE</span>
+        <input id="fTitle" name="title" maxlength="120" required placeholder="Ran my first half marathon">
+      </label>
+
+      <div class="field-row">
+        <label class="field">
+          <span>DATE ACHIEVED</span>
+          <input id="fDate" name="date" type="date" required>
+        </label>
+      </div>
+
+      <fieldset class="field">
+        <legend>CATEGORY</legend>
+        <div class="cat-pick" id="catPick"></div>
+      </fieldset>
+
+      <label class="field">
+        <span>HOW YOU GOT THERE <em>(optional)</em></span>
+        <textarea id="fNote" name="note" rows="3" maxlength="400" placeholder="Four months of 6am runs along the Naviglio."></textarea>
+      </label>
+
+      <div class="form-error" id="formError" role="alert" hidden></div>
+
+      <div class="dlg-actions">
+        <button type="button" class="btn ghost" id="cancelBtn">CANCEL</button>
+        <button type="submit" class="btn primary" id="saveBtn">UPLOAD DISCOVERY</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="vendor/d3-array.min.js"></script>
+  <script src="vendor/d3-geo.min.js"></script>
+  <script src="vendor/topojson-client.min.js"></script>
+  <script src="vendor/world-110m.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

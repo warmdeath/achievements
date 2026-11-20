@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "Atlas of the Real",
+  "description": "A living wallpaper for every new tab: the real Earth, your beacon in Milan, and the goals you've already achieved in orbit.",
+  "version": "1.0.0",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  }
+}
