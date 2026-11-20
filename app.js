@@ -83,8 +83,37 @@
   function save() {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(items)); storageOK = true; }
     catch { storageOK = false; }
-    $('storeNote').textContent = storageOK ? 'Saved in this browser' : 'Storage blocked — export to keep';
+    if (!remote) $('storeNote').textContent = storageOK ? 'Saved in this browser' : 'Storage blocked — export to keep';
   }
+  // Cloud sync when hosted on claude.ai (private per person); local storage otherwise.
+  let remote = null;
+  function remotePut(it) { if (remote) remote.doc(it.id).set({ ...it }).catch(() => toast('SYNC FAILED · SAVED LOCALLY', true)); }
+  function remoteDel(id) { if (remote) remote.doc(id).delete().catch(() => toast('SYNC FAILED', true)); }
+  async function connectCloud() {
+    try {
+      if (!window.claude || typeof window.claude.use !== 'function') return;
+      const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+      if (!db || !user) return;
+      const uidv = await user.id();
+      if (!uidv) return;
+      const col = db.collection('data/users/' + uidv);
+      let first = true;
+      col.onSnapshot((snap) => {
+        const rows = snap.docs.map((d) => ({ id: d.id, ...d.data() })).filter(validShape);
+        if (first) {
+          first = false;
+          remote = col;
+          const have = new Set(rows.map((r) => r.id));
+          const local = items.filter((x) => !have.has(x.id));
+          if (local.length) { local.forEach(remotePut); rows.push(...local); }
+        }
+        items = rows;
+        save(); layoutOrbits(); renderLog();
+        $('storeNote').textContent = 'Synced to your account';
+      }, () => { $('storeNote').textContent = 'Offline · saved in this browser'; });
+    } catch { /* stay local */ }
+  }
+
   function validShape(x) {
     return x && typeof x.title === 'string' && x.title.trim() && isDay(x.date) && CATS[x.category];
   }
@@ -188,6 +217,7 @@
       db.addEventListener('click', () => {
         if (confirm(`Remove “${it.title}” from your log?`)) {
           items = items.filter((x) => x.id !== it.id);
+          remoteDel(it.id);
           save(); layoutOrbits(); renderLog(); toast('DISCOVERY REMOVED');
         }
       });
@@ -268,11 +298,12 @@
 
     if (editingId) {
       const it = items.find((x) => x.id === editingId);
-      if (it) Object.assign(it, { title, date, note, category });
+      if (it) { Object.assign(it, { title, date, note, category }); remotePut(it); }
       toast('DISCOVERY AMENDED');
     } else {
       const it = { id: uid(), title, date, category, note, loggedAt: Date.now() };
       items.push(it);
+      remotePut(it);
       openId = it.id;
       burst = { id: it.id, t0: performance.now() };
       toast(`DISCOVERY UPLOADED · ${CATS[category].label.toUpperCase()}`);
@@ -314,7 +345,7 @@
         const x = { id: raw.id || uid(), title: String(raw.title || '').trim(), date: raw.date, category: raw.category, note: String(raw.note || ''), loggedAt: raw.loggedAt || Date.now() };
         if (!validShape(x) || realityCheck(x.title, x.date)) { rejected++; continue; }
         if (have.has(x.id)) continue;
-        items.push(x); have.add(x.id); added++;
+        items.push(x); have.add(x.id); added++; remotePut(x);
       }
       save(); layoutOrbits(); renderLog();
       toast(rejected ? `IMPORTED ${added} · ${rejected} DREAMS FILTERED` : `IMPORTED ${added} DISCOVERIES`, added === 0 && rejected > 0);
@@ -1033,5 +1064,6 @@
   save();
   layout();
   requestAnimationFrame(frame);
+  connectCloud();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { lastFrame = 0; });
 })();
