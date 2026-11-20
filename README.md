@@ -6,7 +6,6 @@ A living new-tab wallpaper in a No Man's Sky style palette.
 - **Your beacon in Milan**: a waypoint with a pulsing scan, Milan's local time, and the sun's height there.
 - **A log of achieved goals.** Each one becomes a glyph orbiting the planet, coloured by category (Body, Mind, Craft, Wealth, Bonds, Voyage).
 - **No dreams allowed.** The dream filter turns away any entry dated in the future or written as a wish ("I will…", "someday…", "want to…", "dream…").
-- A web search bar ("Scan the web…") at the top.
 
 ## Use it as your new tab
 
@@ -24,7 +23,6 @@ Open `index.html` in any browser.
 
 ## Keys
 - `N` logs a new discovery
-- `/` focuses the search bar
 - Drag the planet to look around. It drifts back to Milan on its own.
 - Click an orbiting glyph to open it in the log.
 

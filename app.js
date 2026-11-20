@@ -319,7 +319,6 @@
     const tag = (e.target.tagName || '').toLowerCase();
     if (dlg.open || tag === 'input' || tag === 'textarea' || e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.key === 'n' || e.key === 'N') { e.preventDefault(); openDialog(); }
-    if (e.key === '/') { e.preventDefault(); document.querySelector('.scan input').focus(); }
   });
 
   // --- Export / import -----------------------------------------------------

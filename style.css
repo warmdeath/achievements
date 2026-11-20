@@ -67,7 +67,7 @@ kbd {
   top: 0; left: 0; right: 0;
   z-index: 3;
   display: grid;
-  grid-template-columns: 1fr minmax(260px, 520px) 1fr;
+  grid-template-columns: 1fr auto;
   align-items: center;
   gap: 24px;
   padding: 20px 28px;
